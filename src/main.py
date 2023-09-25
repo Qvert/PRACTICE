@@ -29,6 +29,7 @@ parser.add_argument(
     type=int,
     help="Enter a number to get the result from the formula",
 )
+
 count_value = parser.parse_args().count
 
 try:
