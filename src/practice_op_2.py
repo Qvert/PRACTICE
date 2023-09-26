@@ -5,7 +5,7 @@ Practice 2 OP
 
 def calculate_function(list_all_coord: list) -> None:
     """
-    :param list_all_coord:
+    :param list_all_coord: List all coordinates
     :return: None
     """
     list_coord_x, list_coord_y, list_coord_z = [], [], []
@@ -62,32 +62,25 @@ def response_output(tuple_expectation: tuple, tuple_variance: tuple) -> None:
     :param tuple_variance: Tuple of variances
     :return: None
     """
-    print(
-        "Estimation of mathematical expectation: \n"
-        f"For the x axis: {tuple_expectation[0]}\n"
-        f"For the y axis: {tuple_expectation[1]}\n"
-        f"For the z axis: {tuple_expectation[2]}\n"
-    )
-
-    print(
-        "Estimation of variances: \n"
-        f"For the x axis: {tuple_variance[0]}\n"
-        f"For the y axis: {tuple_variance[1]}\n"
-        f"For the z axis: {tuple_variance[2]}\n"
-    )
+    list_axis = ["x", "y", "z"]
+    dict_response = {
+        "Estimation_of_mathematical_expectation": dict(zip(list_axis, tuple_expectation)),
+        "Estimation_of_variances": dict(zip(list_axis, tuple_variance)),
+    }
+    print(f'\n{dict_response}\n')
 
 
 list_coordinates = []
 while True:
     coordinates = tuple(
-        map(int, input("Please enter the coordinates of the point ()").split())
+        map(int, input("Please enter the coordinates of the point (x <= 20, y <= 30, z <= 10)").split())
     )
 
     if len(coordinates) != 3:
         print("I'm sorry, but you didn't enter the coordinates completely")
         continue
 
-    if coordinates[0] >= 20 or coordinates[1] >= 30 or coordinates[2] >= 10:
+    if coordinates[0] > 20 or coordinates[1] > 30 or coordinates[2] > 10:
         print(
             "Sorry, but the coordinates of the point go beyond the specified parameter"
         )
@@ -104,17 +97,25 @@ while True:
             "2. Enter coordinates: 2\n"
             "3. Go to the calculations: 3\n"
             "4. Clearing the list of coordinates: 4\n"
+            "5. Delete the last coordinates: 5\n"
         )
         if parameter == "1":
             FLAG = True
             break
+
         if parameter == "2":
             break
+
         if parameter == "3":
             calculate_function(list_coordinates)
             continue
+
         if parameter == "4":
             list_coordinates = []
+
+        if parameter == "5":
+            del list_coordinates[-1]
+
         else:
             print("You have entered something else try again")
             continue
