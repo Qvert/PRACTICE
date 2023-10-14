@@ -64,19 +64,25 @@ def response_output(tuple_expectation: tuple, tuple_variance: tuple) -> None:
     """
     list_axis = ["x", "y", "z"]
     dict_response = {
-        "Estimation_of_mathematical_expectation": dict(zip(list_axis,
-                                                           tuple_expectation)),
+        "Estimation_of_mathematical_expectation": dict(
+            zip(list_axis, tuple_expectation)
+        ),
         "Estimation_of_variances": dict(zip(list_axis, tuple_variance)),
     }
-    print(f'\n{dict_response}\n')
+    print(f"\n{dict_response}\n")
 
 
 list_coordinates = []
 while True:
     try:
         coordinates = tuple(
-            map(int, input("Please enter the coordinates of the point"
-                           " (x <= 20, y <= 30, z <= 10)").split())
+            map(
+                int,
+                input(
+                    "Please enter the coordinates of the point"
+                    " (x <= 20, y <= 30, z <= 10)"
+                ).split(),
+            )
         )
     except ValueError:
         print("You didn't enter a number")
