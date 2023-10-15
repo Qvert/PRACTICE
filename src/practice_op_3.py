@@ -1,8 +1,10 @@
 from collections import Counter
+from functools import wraps
 
 
 ls_haf = list()
 text_input = ""
+code_string = ""
 
 
 def recursion_make_code_symbol(st, el):
@@ -18,7 +20,7 @@ def recursion_make_code_symbol(st, el):
 def make_tree_huffman_code(input_str: str) -> str:
     """
     :param input_str: Input stroke
-    :return:
+    :return: Tuple tree huffman code
     """
     ls = list(sorted(Counter(input_str).items(), key=lambda x: x[1]))
 
@@ -60,8 +62,26 @@ def compress_code_huffman(text: str, dc_haf: dict) -> str:
     return str_result
 
 
-def main():
-    global text_input
+def decompress_code_huffman(text: str, dc_haf: dict) -> str:
+    """
+    :param text: The string to be decoded
+    :param dc_haf: Symbol code dictionary
+    :return: Decode string
+    """
+    dc_decode = {dc_haf[key]: key for key in dc_haf}
+    st_res = ""
+    while len(text) > 0:
+        num = 1
+        while text[:num] not in dc_decode:
+            num += 1
+        st_res += dc_decode[text[:num]]
+        text = text[num:]
+    return st_res
+
+
+def main() -> None:
+    """Main function"""
+    global text_input, code_string
     while True:
         parameter = input(
             "Select the following action:\n"
@@ -70,25 +90,30 @@ def main():
             "3. Decode a string using the Huffman method: 3\n"
             "4. Exit the program: 4\n"
         )
-        match parameter:
-            case "1":
-                text_input = input("Please enter the string you want to encode: ")
-                continue
-            case "2":
-                try:
-                    result_codding = compress_code_huffman(
+        try:
+            match parameter:
+                case "1":
+                    text_input = input("Please enter the string you want to encode: ")
+                    continue
+                case "2":
+                    code_string = compress_code_huffman(
                         text_input, make_dict_huffman(text_input)
                     )
                     print(
-                        f"Your string '{text_input}' is in coded form: {result_codding}\n"
+                        f"Your string '{text_input}' is in coded form: {code_string}\n"
                     )
-                except IndexError:
-                    print("!!!Please enter a string!!!")
-                    continue
-            case "3":
-                pass
-            case "4":
-                break
+                case "3":
+                    result_decoding = decompress_code_huffman(
+                        code_string, make_dict_huffman(text_input)
+                    )
+                    print(
+                        f"Your string '{code_string}' is in decode form: {result_decoding}\n"
+                    )
+                case "4":
+                    break
+        except IndexError:
+            print("!!!Please enter a string!!!")
+            continue
 
 
 if __name__ == "__main__":
