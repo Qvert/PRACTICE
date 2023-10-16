@@ -1,19 +1,27 @@
+# pylint: disable=global-variable-not-assigned
+# pylint: disable=global-statement
+
+"""Practice 3 OP"""
 from collections import Counter
-from functools import wraps
 
 
-ls_haf = list()
-text_input = ""
-code_string = ""
+LS_HAF = []
+TEXT_INPUT = ""
+CODE_STRING = ""
 
 
-def recursion_make_code_symbol(st, el):
-    global ls_haf
-    if type(el) == str:
-        ls_haf.append((el, st))
+def recursion_make_code_symbol(string: str, element: str) -> None:
+    """
+    :param string: String code symbol
+    :param element: Element iteration
+    :return: None
+    """
+    global LS_HAF
+    if isinstance(element, str):
+        LS_HAF.append((element, string))
         return
-    recursion_make_code_symbol(st + "0", el[0])
-    recursion_make_code_symbol(st + "1", el[1])
+    recursion_make_code_symbol(string + "0", element[0])
+    recursion_make_code_symbol(string + "1", element[1])
     return
 
 
@@ -22,20 +30,24 @@ def make_tree_huffman_code(input_str: str) -> str:
     :param input_str: Input stroke
     :return: Tuple tree huffman code
     """
-    ls = list(sorted(Counter(input_str).items(), key=lambda x: x[1]))
+    list_probabilities_ch = list(sorted(Counter(input_str).items(),
+                                        key=lambda x: x[1]))
 
-    while len(ls) >= 2:
-        d = ((ls[0][0], ls[1][0]), ls[0][1] + ls[1][1])
-        if ls[-1][1] < d[1]:
-            ls.append(d)
+    while len(list_probabilities_ch) >= 2:
+        sum_symbol = (
+            (list_probabilities_ch[0][0], list_probabilities_ch[1][0]),
+            list_probabilities_ch[0][1] + list_probabilities_ch[1][1],
+        )
+        if list_probabilities_ch[-1][1] < sum_symbol[1]:
+            list_probabilities_ch.append(sum_symbol)
         else:
-            for num in range(2, len(ls)):
-                if ls[num][1] >= d[1]:
-                    ls.insert(num, d)
+            for num in range(2, len(list_probabilities_ch)):
+                if list_probabilities_ch[num][1] >= sum_symbol[1]:
+                    list_probabilities_ch.insert(num, sum_symbol)
                     break
-        ls.pop(0)
-        ls.pop(0)
-    return ls[0][0]
+        list_probabilities_ch.pop(0)
+        list_probabilities_ch.pop(0)
+    return list_probabilities_ch[0][0]
 
 
 def make_dict_huffman(text: str) -> dict:
@@ -43,11 +55,11 @@ def make_dict_huffman(text: str) -> dict:
     :param text: Input string
     :return: Dict with symbols code
     """
-    global ls_haf
-    ls = make_tree_huffman_code(text)
-    ls_haf = []
-    recursion_make_code_symbol("", ls)
-    return dict(ls_haf)
+    global LS_HAF
+    list_probabilities_ch = make_tree_huffman_code(text)
+    LS_HAF = []
+    recursion_make_code_symbol("", list_probabilities_ch)
+    return dict(LS_HAF)
 
 
 def compress_code_huffman(text: str, dc_haf: dict) -> str:
@@ -81,7 +93,7 @@ def decompress_code_huffman(text: str, dc_haf: dict) -> str:
 
 def main() -> None:
     """Main function"""
-    global text_input, code_string
+    global TEXT_INPUT, CODE_STRING
     while True:
         parameter = input(
             "Select the following action:\n"
@@ -93,22 +105,21 @@ def main() -> None:
         try:
             match parameter:
                 case "1":
-                    text_input = input("Please enter the string you want to encode: ")
-                    continue
+                    TEXT_INPUT = input(
+                        "Please enter"
+                        " the string you want to encode: "
+                    )
+
                 case "2":
-                    code_string = compress_code_huffman(
-                        text_input, make_dict_huffman(text_input)
+                    CODE_STRING = compress_code_huffman(
+                        TEXT_INPUT, make_dict_huffman(TEXT_INPUT)
                     )
-                    print(
-                        f"Your string '{text_input}' is in coded form: {code_string}\n"
-                    )
+                    print(f"Your coded string: {CODE_STRING}\n")
                 case "3":
                     result_decoding = decompress_code_huffman(
-                        code_string, make_dict_huffman(text_input)
+                        CODE_STRING, make_dict_huffman(TEXT_INPUT)
                     )
-                    print(
-                        f"Your string '{code_string}' is in decode form: {result_decoding}\n"
-                    )
+                    print(f"Your decoded string: {result_decoding}\n")
                 case "4":
                     break
         except IndexError:
